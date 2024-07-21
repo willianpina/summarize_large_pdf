@@ -9,10 +9,8 @@ from langchain_openai import OpenAI, ChatOpenAI, OpenAIEmbeddings
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from tqdm import tqdm
-from config import set_environment
 
 class PDFSummarizer:
-    # set_environment()
     def __init__(self, file_path=None):
         self.file_path = file_path
         self.loader = PyPDFLoader(file_path=file_path) if file_path else None
