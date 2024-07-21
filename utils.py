@@ -13,9 +13,8 @@ from config import set_environment
 
 class PDFSummarizer:
     set_environment()
-    def __init__(self, file_path=None, openai_api_key=None):
+    def __init__(self, file_path=None):
         self.file_path = file_path
-        self.openai_api_key = openai_api_key
         self.loader = PyPDFLoader(file_path=file_path) if file_path else None
         self.pages = None
         self.cleaned_text = None
@@ -93,7 +92,7 @@ class PDFSummarizer:
         return self.extracted_docs
 
     def summarize_documents(self, progress_callback=None):
-        model = ChatOpenAI(temperature=0, model="gpt-4o-mini", api_key=self.openai_api_key)
+        model = ChatOpenAI(temperature=0, model="gpt-4o-mini")
         prompt = ChatPromptTemplate.from_template("""
             Você é uma aluna de relações internacionais e está estudando para uma prova. Você receberá os textos para resumir de forma natural e coerente.
             Busque destacar os aspectos mais importantes do texto em formato de bullet points.
