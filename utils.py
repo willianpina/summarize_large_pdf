@@ -12,7 +12,7 @@ from tqdm import tqdm
 from config import set_environment
 
 class PDFSummarizer:
-    set_environment()
+    # set_environment()
     def __init__(self, file_path=None):
         self.file_path = file_path
         self.loader = PyPDFLoader(file_path=file_path) if file_path else None
