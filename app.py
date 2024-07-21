@@ -1,7 +1,6 @@
 import streamlit as st
 from utils import PDFSummarizer
 import tempfile
-import os
 from gtts import gTTS
 import base64
 
