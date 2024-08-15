@@ -11,7 +11,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from tqdm import tqdm
 
 class PDFSummarizer:
-    def __init__(self, file_path=None):
+    def __init__(self, file_path=None, openai_api_key=None):
         self.file_path = file_path
         self.loader = PyPDFLoader(file_path=file_path) if file_path else None
         self.pages = None
@@ -25,6 +25,8 @@ class PDFSummarizer:
         self.sorted_array = None
         self.extracted_docs = None
         self.final_summary = ""
+        self.openai_api_key = openai_api_key
+        openai.api_key = self.openai_api_key
 
     def extract_text(self):
         if not self.loader:
@@ -50,12 +52,12 @@ class PDFSummarizer:
         return self.cleaned_text
 
     def get_num_tokens(self, text):
-        llm = OpenAI()
+        llm = OpenAI(api_key=self.openai_api_key)
         tokens = llm.get_num_tokens(text)
         return tokens
 
     def create_documents(self):
-        text_splitter = SemanticChunker(OpenAIEmbeddings(), breakpoint_threshold_type="interquartile")
+        text_splitter = SemanticChunker(OpenAIEmbeddings(api_key = self.openai_api_key), breakpoint_threshold_type="interquartile")
         self.docs = text_splitter.create_documents([self.cleaned_text])
         return self.docs
 
@@ -90,7 +92,7 @@ class PDFSummarizer:
         return self.extracted_docs
 
     def summarize_documents(self, progress_callback=None):
-        model = ChatOpenAI(temperature=0, model="gpt-4o-mini")
+        model = ChatOpenAI(temperature=0, model="gpt-4o-mini", api_key=self.openai_api_key)
         prompt = ChatPromptTemplate.from_template("""
             Você é uma aluna de relações internacionais e está estudando para uma prova. Você receberá os textos para resumir de forma natural e coerente.
             Busque destacar os aspectos mais importantes do texto em formato de bullet points.

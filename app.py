@@ -1,16 +1,14 @@
 import streamlit as st
-from utils import PDFSummarizer
+import streamlit as st
 import tempfile
 from gtts import gTTS
 import base64
-import openai
-
+from utils import PDFSummarizer
 
 # Função para limpar o estado do carregamento do arquivo e resetar a barra de progresso
 def clear_uploaded_file():
     st.session_state.uploaded_file = None
     st.session_state.progress = 0
-
 
 # Função para converter texto em áudio e gerar link de download
 def text_to_audio(text, lang='pt'):
@@ -21,13 +19,11 @@ def text_to_audio(text, lang='pt'):
     audio_file.close()
     return audio_bytes
 
-
 # Função para gerar o link de download do arquivo de áudio
 def get_audio_download_link(audio_bytes, filename='summary.mp3'):
     b64 = base64.b64encode(audio_bytes).decode()
     href = f'<a href="data:audio/mp3;base64,{b64}" download="{filename}">Baixar áudio</a>'
     return href
-
 
 # Adicionar código do Streamlit aqui
 st.title("PDF Summarizer & Audio Converter")
@@ -38,7 +34,6 @@ Upload a PDF file and get a concise summary of its content. This application not
 # Solicitar chave da API OpenAI
 openai_api_key = st.text_input("Enter your OpenAI API Key", type="password")
 if openai_api_key:
-    openai.api_key = openai_api_key
     uploaded_file = st.file_uploader("Upload the PDF file", type=["pdf"])
 
     if uploaded_file is not None:
@@ -49,7 +44,7 @@ if openai_api_key:
             temp_file.write(uploaded_file.read())
             temp_file_path = temp_file.name
 
-        summarizer = PDFSummarizer(temp_file_path)
+        summarizer = PDFSummarizer(file_path=temp_file_path, openai_api_key=openai_api_key)
 
         progress_bar = st.progress(0)
 
